@@ -18,7 +18,17 @@ class CommentController extends Controller
             'comment' => $request->comment,
         ]);
 
-        return redirect('/')->with('success', 'Comment created successfully!');
+        return response()->json([
+            'success' => true,
+            'comment' => [
+                'id' => $comment->id,
+                'user' => [
+                    'username' => Auth::user()->username
+                ],
+                'comment' => $comment->comment,
+                'is_owner' => Auth::id() == $comment->user_id  // Informasi apakah user adalah pemilik komentar
+            ]
+        ]);
     }
 
     public function destroy($id)
@@ -30,6 +40,6 @@ class CommentController extends Controller
         }
         $comment->delete();
 
-        return redirect()->back()->with('danger', 'Comment has been deleted.');
+        return response()->json(['success' => 'Comment deleted successfully.']);
     }
 }
