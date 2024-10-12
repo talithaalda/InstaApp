@@ -25,7 +25,7 @@
     </div>
     <button
         class="btn fixed bottom-10 right-10 p-6 rounded-full z-40 flex items-center bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white h-16"
-        onclick="my_modal_1.showModal()">New
+        onclick="my_modal_1.showModal()"><i class="fa-solid fa-plus"></i> New
         Post</button>
     <dialog id="my_modal_1" class="modal">
         <div class="modal-box">
@@ -250,10 +250,7 @@
                     },
                     success: function(response) {
                         if (response.success) {
-                            // Prepare the delete button HTML
                             var deleteButton = '';
-
-                            // Check if the user is the owner of the comment
                             if (response.comment.is_owner) {
                                 deleteButton = `
 <div class="dropdown dropdown-bottom">
@@ -271,7 +268,6 @@
 `;
                             }
 
-                            // Create the new comment HTML
                             var newCommentHtml = `
 <div class="ps-4 mb-2 flex flex-row justify-between items-center" id="comment-${response.comment.id}">
     <div class="flex flex-row gap-2">
@@ -282,16 +278,15 @@
 </div>
 `;
 
-                            // Append the new comment to the comment list
+
                             $('#comment_modal_' + postId + ' .flex-col').append(newCommentHtml);
 
-                            // Update the comment count
                             var commentCountElement = $('#comment_count_' + postId);
                             var currentCount = parseInt(commentCountElement.text());
                             commentCountElement.text(currentCount +
-                                1); // Increment comment count
+                                1);
 
-                            // Clear the comment input after success
+
                             commentInput.val('');
                             console.log('Comment added successfully');
                         } else {
@@ -306,20 +301,21 @@
         });
 
 
-        // Event listener for delete comment button
+
         $(document).on('click', '.delete-comment', function() {
             const commentId = $(this).data('id');
 
             if (confirm('Are you sure you want to delete this comment?')) {
                 $.ajax({
-                    url: `/comments/${commentId}`, // Adjust this URL if needed based on your routing
+                    url: `/comments/${commentId}`,
                     type: 'DELETE',
                     data: {
-                        _token: '{{ csrf_token() }}', // Laravel CSRF token
+                        _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
-                        // Remove the comment div upon successful deletion
-                        $(`#comment-${commentId}`).remove(); // Remove the comment block
+                        Rem
+
+                        $(`#comment-${commentId}`).remove();
                         alert('Comment deleted successfully!');
                     },
                     error: function(xhr) {
