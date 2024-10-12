@@ -1,66 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Hi there, welcome to InstaApp 👋
 
-## About Laravel
+**InstaApp** is a social media platform for sharing photos, liking posts, and commenting. It offers an easy-to-use interface for connecting with others, exploring content, and sharing moments.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Installation Instructions
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Prerequisites
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Make sure you have the following tools installed:
 
-## Learning Laravel
+- **PHP** (Version 8.2 or higher)
+- **XAMPP** (for Apache and MySQL)
+- **Composer**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Installation Steps
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+1. **Activate XAMPP**:
+   - Open the **XAMPP Control Panel** and click **Start** on the Apache and MySQL modules.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. **Create a New Database**:
+   - Access `http://localhost/phpmyadmin/index.php`.
+   - Click the **Database** tab at the top.
+   - Type "laravel" in the **Database Name** input field and click the **Create** button.
 
-## Laravel Sponsors
+3. **Clone the Repository**:
+   - Open a terminal in the desired folder and run the following command to clone the project:
+     ```bash
+     git clone https://github.com/talithaalda/InstaApp.git
+     ```
+   - Navigate into the project directory:
+     ```bash
+     cd InstaApp
+     ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+4. **Update Dependencies**:
+   - Run the following command to update the dependencies:
+     ```bash
+     composer update
+     ```
 
-### Premium Partners
+5. **Configure the Environment**:
+   - Copy the `.env.example` file to `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Open the `.env` file and update the **DB_DATABASE** value to match the name of the database you created.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+6. **Generate Application Key**:
+   - Run the following command to generate the application key:
+     ```bash
+     php artisan key:generate
+     ```
 
-## Contributing
+7. **Create Storage Symlink**:
+   - Run the following command to create a storage symlink:
+     ```bash
+     php artisan storage:link
+     ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+8. **Migrate Database and Seed**:
+   - Migrate the database and seed it with initial data:
+     ```bash
+     php artisan migrate:fresh 
+     ```
 
-## Code of Conduct
+9. **Run the Local Server**:
+   - Start the local development server:
+     ```bash
+     php artisan serve
+     ```
+   - Access the application in your browser at `http://127.0.0.1:8000`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+10. **Build Tailwind CSS**:
+   - To build Tailwind CSS assets, you can run:
+     ```bash
+     npm run dev
+     ```
+     This will compile the Tailwind CSS and any other frontend assets. Alternatively, you can use:
+      ```bash
+     npm run build
+     ```
 
-## Security Vulnerabilities
+11. **Troubleshooting**:
+    - If you encounter any errors, try running:
+      ```bash
+      php artisan optimize
+      ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+> **Note**: Product images might not display automatically. To display the images, you need to add them through the admin dashboard under the edit product menu. The product images can be found in the `public` folder.
 
-## License
+## 👥 User Access
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+1. **User Login**:
+   - Navigate to `http://127.0.0.1:8000/login`.
+   
+2. **User Registration**:
+   - If you don't have an account, click **Register Now** and fill in your username, email, and password.
+
+3. **Login**:
+   - Log in using the email and password you registered with.
+
+---
