@@ -1,6 +1,6 @@
 @extends('partials.layout')
 @section('container')
-<div class="container mx-auto">
+<div class="container mx-auto max-w-xl">
     <h1 class="text-center text-3xl font-bold mt-10">Register</h1>
     <form action="{{ route('register') }}" method="POST" class="mt-5 gap-5 flex flex-col">
         @csrf
@@ -27,5 +27,6 @@
         <p class="text-red-500 text-sm">{{ $message }}</p>
         @enderror
         <button type="submit" class="btn btn-primary w-full">Register</button>
+        <p class="text-center">Already have an account? <a href="/login" class="text-blue-500">Login</a></p>
     </form>
     @endsection

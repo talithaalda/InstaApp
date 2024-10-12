@@ -1,15 +1,41 @@
 @extends('partials.layout')
 @section('container')
-<button class="btn" onclick="my_modal_1.showModal()">New Post</button>
+<div class="navbar bg-base-100">
+    <div class="flex-1">
+        <a class="btn btn-ghost text-xl">InstaApp</a>
+    </div>
+    <div class="flex-none">
+        <ul class="menu menu-horizontal px-1">
+            <li>
+                <details>
+                    <summary><i class="fa-regular fa-user"></i>Account</summary>
+                    <ul class="bg-base-100 rounded-t-none p-2">
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST"
+                                onsubmit="return confirm('Are you sure you want to logout?');">
+                                @csrf
+                                <button type="submit" class="text-red-500 w-full text-left">Sign Out</button>
+                            </form>
+                        </li>
+                    </ul>
+                </details>
+            </li>
+        </ul>
+    </div>
+</div>
+<button
+    class="btn fixed bottom-10 right-10 p-6 rounded-full z-40 flex items-center bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white h-16"
+    onclick="my_modal_1.showModal()">New
+    Post</button>
 <dialog id="my_modal_1" class="modal">
     <div class="modal-box">
-        <h3 class="text-lg font-bold">Create Post</h3>
+        <div class="text-lg font-bold mb-2 justify-center flex">Create Post</div>
         <div class="">
             <form method="POST" action="/posts" enctype="multipart/form-data" class="flex flex-col gap-4">
                 @csrf
                 <div>
                     <div class="label">
-                        Pick a file
+                        Upload Image
                     </div>
                     <input type="file" class="file-input file-input-bordered w-full" name="image" />
                 </div>
@@ -40,7 +66,6 @@
         {{ session('success') }}
     </div>
     @endif
-
     @if(session('danger'))
     <div class="alert alert-error max-w-xl">
         {{ session('danger') }}
@@ -50,7 +75,7 @@
     <div class="card bg-base-100 max-w-xl shadow-xl ">
         <div class="flex flex-row justify-between">
             <h2 class="card-title">
-                {{ $post->user->username }}
+                {{ '@' . $post->user->username }}
             </h2>
             @if (Auth::user()->id == $post->user->id)
             <div class="dropdown dropdown-end ">
@@ -74,25 +99,21 @@
             <img src="{{ asset('storage/' . $post->image_path) }}" alt="Post Image" />
         </figure>
         <div class="flex flex-row">
-            <form action="/posts/{{ $post->id }}/like" method="POST">
-                @csrf
-                <div class="flex items-center space-x-2 p-4 ">
-                    <button type="submit" class="flex items-center space-x-2">
-                        @if($post->isLikedBy(auth()->user()))
-                        <!-- Cek apakah posting telah dilike -->
-                        <i class="fa-solid fa-heart text-2xl text-red-400"></i> <!-- Ikon penuh jika dilike -->
-                        @else
-                        <i class="fa-regular fa-heart text-2xl"></i> <!-- Ikon kosong jika belum dilike -->
-                        @endif
-                        <span class="text-lg">Like</span>
-                    </button>
-                </div>
-            </form>
+            <div class="flex items-center space-x-2 p-4">
+                <button id="like-button" data-post-id="{{ $post->id }}" class="flex items-center space-x-2">
+                    @if($post->isLikedBy(auth()->user()))
+                    <i class="fa-solid fa-heart text-2xl text-red-400"></i>
+                    @else
+                    <i class="fa-regular fa-heart text-2xl"></i>
+                    @endif
+                    <span id="like-count">{{ $post->likes()->count() }}</span>
+                    <span class="text-lg">Like</span>
+                </button>
+            </div>
             <div class="flex items-center space-x-2 p-4 ">
                 <button onclick="document.getElementById('comment_modal_{{ $post->id }}').showModal()"><i
                         class="fa-regular fa-comment text-2xl"></i>
                     <span class="text-lg">Comment</span></button>
-
             </div>
         </div>
         <div class="card-body pt-0">
@@ -102,13 +123,12 @@
             <p>{{ $post->caption }}</p>
             <div class="card-actions justify-end">
                 <div class="badge badge-outline">{{ $post->created_at->diffForHumans() }}</div>
-
             </div>
             <form method="POST" action="/posts/{{ $post->id }}/comments">
                 @csrf
                 <div class="flex flex-row gap-4 justify-center items-center">
                     <input type="text"
-                        class="input w-full input-bordered border-0 border-b-2 focus:border-purple-700 border-purple-800 focus:outline-none rounded-none"
+                        class="input w-full input-bordered border-0 border-b-2 focus:border-blue-700 border-blue-800 focus:outline-none rounded-none"
                         placeholder="Type comment..." name="comment" />
                     <button type="submit">
                         <x-ionicon-send class="mr-2 size-6" />
@@ -150,7 +170,7 @@
                 @csrf
                 <div class="flex flex-row gap-4 justify-center items-center">
                     <input type="text"
-                        class="input w-full input-bordered border-0 border-b-2 focus:border-purple-700 border-purple-800 focus:outline-none rounded-none"
+                        class="input w-full input-bordered border-0 border-b-2 focus:border-blue-700 border-blue-800 focus:outline-none rounded-none"
                         placeholder="Type comment..." name="comment" />
                     <button type="submit">
                         <x-ionicon-send class="mr-2 size-6" />
@@ -165,5 +185,35 @@
     @endforeach
 
 </div>
+<script>
+    $(document).ready(function() {
+        $('#like-button').click(function(e) {
+            e.preventDefault();
 
+            var postId = $(this).data('post-id');
+            var $this = $(this);
+
+            $.ajax({
+                url: '/posts/' + postId + '/like',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function(response) {
+
+                    if (response.liked) {
+                        $this.find('i').removeClass('fa-regular fa-heart').addClass('fa-solid fa-heart text-red-400');
+                    } else {
+                        $this.find('i').removeClass('fa-solid fa-heart text-red-400').addClass('fa-regular fa-heart');
+                    }
+                    $('#like-count').text(response.likeCount);
+                    console.log('Like toggled successfully');
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
 @endsection

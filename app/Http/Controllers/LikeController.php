@@ -16,10 +16,16 @@ class LikeController extends Controller
 
         if ($like) {
             $like->delete();
-            return redirect('/')->with('success', 'Post unliked');
+            $liked = false;
         } else {
             Like::create(['post_id' => $postId, 'user_id' => Auth::id()]);
-            return redirect('/')->with('success', 'Post liked');
+            $liked = true;
         }
+
+        // Mengembalikan respons dalam format JSON
+        return response()->json([
+            'liked' => $liked,
+            'likeCount' => $post->likes()->count(),
+        ]);
     }
 }
