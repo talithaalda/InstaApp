@@ -202,10 +202,8 @@
         $(document).ready(function() {
             $('button[id^="like-button-"]').click(function(e) {
                 e.preventDefault();
-
                 var postId = $(this).data('post-id');
                 var $this = $(this);
-
                 $.ajax({
                     url: '/posts/' + postId + '/like',
                     type: 'POST',
@@ -270,8 +268,6 @@
 </div>
 `;
                             }
-
-
                             var newCommentHtml = `
 <div class="ps-4 mb-2 flex flex-row justify-between items-center" id="comment-${response.comment.id}">
     <div class="flex flex-row gap-2">
@@ -281,7 +277,6 @@
     ${deleteButton}
 </div>
 `;
-
 
                             $('#comment_modal_' + postId + ' .flex-col').append(newCommentHtml);
 
