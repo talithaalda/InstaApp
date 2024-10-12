@@ -100,13 +100,14 @@
         </figure>
         <div class="flex flex-row">
             <div class="flex items-center space-x-2 p-4">
-                <button id="like-button" data-post-id="{{ $post->id }}" class="flex items-center space-x-2">
+                <button id="like-button-{{ $post->id }}" data-post-id="{{ $post->id }}"
+                    class="flex items-center space-x-2">
                     @if($post->isLikedBy(auth()->user()))
                     <i class="fa-solid fa-heart text-2xl text-red-400"></i>
                     @else
                     <i class="fa-regular fa-heart text-2xl"></i>
                     @endif
-                    <span id="like-count">{{ $post->likes()->count() }}</span>
+                    <span id="like-count-{{ $post->id }}">{{ $post->likes()->count() }}</span>
                     <span class="text-lg">Like</span>
                 </button>
             </div>
@@ -131,7 +132,7 @@
                         class="input w-full input-bordered border-0 border-b-2 focus:border-blue-700 border-blue-800 focus:outline-none rounded-none"
                         placeholder="Type comment..." name="comment" />
                     <button type="submit">
-                        <x-ionicon-send class="mr-2 size-6" />
+                        Send
                     </button>
                 </div>
             </form>
@@ -173,7 +174,7 @@
                         class="input w-full input-bordered border-0 border-b-2 focus:border-blue-700 border-blue-800 focus:outline-none rounded-none"
                         placeholder="Type comment..." name="comment" />
                     <button type="submit">
-                        <x-ionicon-send class="mr-2 size-6" />
+                        Send
                     </button>
                 </div>
             </form>
@@ -187,7 +188,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#like-button').click(function(e) {
+       $('button[id^="like-button-"]').click(function(e) {
             e.preventDefault();
 
             var postId = $(this).data('post-id');
@@ -200,15 +201,17 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
+                    var likeButton = $('#like-button-' + postId);
+                    var likeCount = $('#like-count-' + postId);
 
                     if (response.liked) {
-                        $this.find('i').removeClass('fa-regular fa-heart').addClass('fa-solid fa-heart text-red-400');
+                        likeButton.find('i').removeClass('fa-regular fa-heart').addClass('fa-solid fa-heart text-red-400');
                     } else {
-                        $this.find('i').removeClass('fa-solid fa-heart text-red-400').addClass('fa-regular fa-heart');
+                        likeButton.find('i').removeClass('fa-solid fa-heart text-red-400').addClass('fa-regular fa-heart');
                     }
-                    $('#like-count').text(response.likeCount);
-                    console.log('Like toggled successfully');
-                },
+                        likeCount.text(response.likeCount);
+                        console.log('Like toggled successfully');
+                    },
                 error: function(xhr) {
                     console.error('Error:', xhr.responseText);
                 }

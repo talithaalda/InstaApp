@@ -11,6 +11,7 @@ class LikeController extends Controller
 {
     public function toggleLike($postId)
     {
+
         $post = Post::findOrFail($postId);
         $like = Like::where('post_id', $postId)->where('user_id', Auth::id())->first();
 
@@ -22,7 +23,6 @@ class LikeController extends Controller
             $liked = true;
         }
 
-        // Mengembalikan respons dalam format JSON
         return response()->json([
             'liked' => $liked,
             'likeCount' => $post->likes()->count(),
