@@ -146,7 +146,7 @@
                     </div>
                 </div>
                 <dialog id="comment_modal_{{ $post->id }}" class="modal">
-                    <div class="modal-box">
+                    <div class="modal-box overflow-y-visible">
                         <h3 class="text-lg font-bold mb-4 justify-center flex">Comments</h3>
                         <div class="flex flex-col gap-2">
                             @foreach ($post->comments as $comment)
@@ -157,7 +157,7 @@
                                         <p class="text-sm text-gray-400">{{ $comment->comment }}</p>
                                     </div>
                                     @if (Auth::user()->id == $comment->user->id)
-                                        <div class="dropdown dropdown-bottom">
+                                        <div class="dropdown dropdown-bottom" class="btn">
                                             <button type="button"
                                                 onclick="this.nextElementSibling.classList.toggle('hidden')">
                                                 <i class="fa-solid fa-ellipsis text-xl"></i>
