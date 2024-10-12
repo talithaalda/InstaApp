@@ -70,125 +70,133 @@
                 {{ session('danger') }}
             </div>
         @endif
-        @foreach ($posts as $post)
-            <div class="card bg-base-100 max-w-xl shadow-xl ">
-                <div class="flex flex-row justify-between">
-                    <h2 class="card-title">
-                        {{ '@' . $post->user->username }}
-                    </h2>
-                    @if (Auth::user()->id == $post->user->id)
-                        <div class="dropdown dropdown-end ">
-                            <label tabindex="0" class="btn btn-ghost btn-circle ">
-                                <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
-                            </label>
-                            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32">
-                                <li>
-                                    <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this post?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-500 w-full block">Delete Post</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    @endif
-                </div>
-                <figure>
-                    <img src="{{ asset('storage/' . $post->image_path) }}" alt="Post Image" />
-                </figure>
-                <div class="flex flex-row">
-                    <div class="flex items-center space-x-2 p-4">
-                        <button id="like-button-{{ $post->id }}" data-post-id="{{ $post->id }}"
-                            class="flex items-center space-x-2">
-                            @if ($post->isLikedBy(auth()->user()))
-                                <i class="fa-solid fa-heart text-2xl text-red-400"></i>
-                            @else
-                                <i class="fa-regular fa-heart text-2xl"></i>
-                            @endif
-                            <span id="like-count-{{ $post->id }}">{{ $post->likes()->count() }}</span>
-                            <span class="text-lg">Like</span>
-                        </button>
-                    </div>
-                    <div class="flex items-center space-x-2 p-4 ">
-                        <button onclick="document.getElementById('comment_modal_{{ $post->id }}').showModal()"><i
-                                class="fa-regular fa-comment text-2xl"></i>
-                            <span>{{ $post->comments()->count() }}</span>
-                            <span class="text-lg">Comment</span></button>
-                    </div>
-                </div>
-                <div class="card-body pt-0">
-                    <h2 class="card-title">
-                        {{ $post->user->username }}
-                    </h2>
-                    <p>{{ $post->caption }}</p>
-                    <div class="card-actions justify-end">
-                        <div class="badge badge-outline">{{ $post->created_at->diffForHumans() }}</div>
-                    </div>
-                    <form method="POST" action="/posts/{{ $post->id }}/comments" class="comment-form"
-                        data-post-id="{{ $post->id }}">
-                        @csrf
-                        <div class="flex flex-row gap-4 justify-center items-center">
-                            <input type="text"
-                                class="input w-full input-bordered border-0 border-b-2 focus:border-blue-700 border-blue-800 focus:outline-none rounded-none"
-                                placeholder="Type comment..." name="comment" required />
-                            <button type="submit" class="submit-comment">
-                                Send
-                            </button>
-                        </div>
-                    </form>
-                </div>
+        @if ($posts->isEmpty())
+            <div class="text-center p-4">
+                <h2 class="text-lg font-semibold">No Posts Available</h2>
+                <p class="text-gray-500">Be the first to share something!</p>
             </div>
-            <dialog id="comment_modal_{{ $post->id }}" class="modal">
-                <div class="modal-box">
-                    <h3 class="text-lg font-bold mb-4 justify-center flex">Comments</h3>
-                    <div class="flex flex-col gap-2">
-                        @foreach ($post->comments as $comment)
-                            <div class="ps-4 mb-2 flex flex-row justify-between items-center"
-                                id="comment-{{ $comment->id }}">
-                                <div class="flex flex-row gap-2">
-                                    <span class="font-semibold text-sm">{{ $comment->user->username }}</span>
-                                    <p class="text-sm text-gray-400">{{ $comment->comment }}</p>
-                                </div>
-                                @if (Auth::user()->id == $comment->user->id)
-                                    <div class="dropdown dropdown-bottom">
-                                        <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')">
-                                            <i class="fa-solid fa-ellipsis text-xl"></i>
-                                        </button>
-                                        <ul
-                                            class="dropdown-content menu p-2 shadow bg-base-100 rounded-box hidden z-30 w-40">
-                                            <li>
-                                                <button type="button" class="text-red-500 w-full block delete-comment"
-                                                    data-id="{{ $comment->id }}">
-                                                    Delete Comment
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                @endif
+        @else
+            @foreach ($posts as $post)
+                <div class="card bg-base-100 max-w-xl shadow-xl ">
+                    <div class="flex flex-row justify-between">
+                        <h2 class="card-title">
+                            {{ '@' . $post->user->username }}
+                        </h2>
+                        @if (Auth::user()->id == $post->user->id)
+                            <div class="dropdown dropdown-end ">
+                                <label tabindex="0" class="btn btn-ghost btn-circle ">
+                                    <i class="fa-solid fa-ellipsis-vertical text-xl"></i>
+                                </label>
+                                <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-32">
+                                    <li>
+                                        <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 w-full block">Delete Post</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
-                        @endforeach
-
+                        @endif
                     </div>
-                    <form method="POST" action="/posts/{{ $post->id }}/comments" class="comment-form"
-                        data-post-id="{{ $post->id }}">
-                        @csrf
-                        <div class="flex flex-row gap-4 justify-center items-center">
-                            <input type="text"
-                                class="input w-full input-bordered border-0 border-b-2 focus:border-blue-700 border-blue-800 focus:outline-none rounded-none"
-                                placeholder="Type comment..." name="comment" required />
-                            <button type="submit" class="submit-comment">
-                                Send
+                    <figure>
+                        <img src="{{ asset('storage/' . $post->image_path) }}" alt="Post Image" />
+                    </figure>
+                    <div class="flex flex-row">
+                        <div class="flex items-center space-x-2 p-4">
+                            <button id="like-button-{{ $post->id }}" data-post-id="{{ $post->id }}"
+                                class="flex items-center space-x-2">
+                                @if ($post->isLikedBy(auth()->user()))
+                                    <i class="fa-solid fa-heart text-2xl text-red-400"></i>
+                                @else
+                                    <i class="fa-regular fa-heart text-2xl"></i>
+                                @endif
+                                <span id="like-count-{{ $post->id }}">{{ $post->likes()->count() }}</span>
+                                <span class="text-lg">Like</span>
                             </button>
                         </div>
-                    </form>
+                        <div class="flex items-center space-x-2 p-4 ">
+                            <button onclick="document.getElementById('comment_modal_{{ $post->id }}').showModal()"><i
+                                    class="fa-regular fa-comment text-2xl"></i>
+                                <span id="comment_count_{{ $post->id }}">{{ $post->comments()->count() }}</span>
+                                <span class="text-lg">Comment</span></button>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <h2 class="card-title">
+                            {{ $post->user->username }}
+                        </h2>
+                        <p>{{ $post->caption }}</p>
+                        <div class="card-actions justify-end">
+                            <div class="badge badge-outline">{{ $post->created_at->diffForHumans() }}</div>
+                        </div>
+                        <form method="POST" action="/posts/{{ $post->id }}/comments" class="comment-form"
+                            data-post-id="{{ $post->id }}">
+                            @csrf
+                            <div class="flex flex-row gap-4 justify-center items-center">
+                                <input type="text"
+                                    class="input w-full input-bordered border-0 border-b-2 focus:border-blue-700 border-blue-800 focus:outline-none rounded-none"
+                                    placeholder="Type comment..." name="comment" required />
+                                <button type="submit" class="submit-comment">
+                                    Send
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <form method="dialog" class="modal-backdrop">
-                    <button>close</button>
-                </form>
-            </dialog>
-        @endforeach
+                <dialog id="comment_modal_{{ $post->id }}" class="modal">
+                    <div class="modal-box">
+                        <h3 class="text-lg font-bold mb-4 justify-center flex">Comments</h3>
+                        <div class="flex flex-col gap-2">
+                            @foreach ($post->comments as $comment)
+                                <div class="ps-4 mb-2 flex flex-row justify-between items-center"
+                                    id="comment-{{ $comment->id }}">
+                                    <div class="flex flex-row gap-2">
+                                        <span class="font-semibold text-sm">{{ $comment->user->username }}</span>
+                                        <p class="text-sm text-gray-400">{{ $comment->comment }}</p>
+                                    </div>
+                                    @if (Auth::user()->id == $comment->user->id)
+                                        <div class="dropdown dropdown-bottom">
+                                            <button type="button"
+                                                onclick="this.nextElementSibling.classList.toggle('hidden')">
+                                                <i class="fa-solid fa-ellipsis text-xl"></i>
+                                            </button>
+                                            <ul
+                                                class="dropdown-content menu p-2 shadow bg-base-100 rounded-box hidden z-30 w-40">
+                                                <li>
+                                                    <button type="button"
+                                                        class="text-red-500 w-full block delete-comment"
+                                                        data-id="{{ $comment->id }}">
+                                                        Delete Comment
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
 
+                        </div>
+                        <form method="POST" action="/posts/{{ $post->id }}/comments" class="comment-form"
+                            data-post-id="{{ $post->id }}">
+                            @csrf
+                            <div class="flex flex-row gap-4 justify-center items-center">
+                                <input type="text"
+                                    class="input w-full input-bordered border-0 border-b-2 focus:border-blue-700 border-blue-800 focus:outline-none rounded-none"
+                                    placeholder="Type comment..." name="comment" required />
+                                <button type="submit" class="submit-comment">
+                                    Send
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                    </form>
+                </dialog>
+            @endforeach
+        @endif
     </div>
     <script>
         $(document).ready(function() {
@@ -277,6 +285,12 @@
                             // Append the new comment to the comment list
                             $('#comment_modal_' + postId + ' .flex-col').append(newCommentHtml);
 
+                            // Update the comment count
+                            var commentCountElement = $('#comment_count_' + postId);
+                            var currentCount = parseInt(commentCountElement.text());
+                            commentCountElement.text(currentCount +
+                                1); // Increment comment count
+
                             // Clear the comment input after success
                             commentInput.val('');
                             console.log('Comment added successfully');
@@ -289,29 +303,30 @@
                     }
                 });
             });
+        });
 
-            // Event listener for delete comment button
-            $(document).on('click', '.delete-comment', function() {
-                const commentId = $(this).data('id');
 
-                if (confirm('Are you sure you want to delete this comment?')) {
-                    $.ajax({
-                        url: `/comments/${commentId}`, // Adjust this URL if needed based on your routing
-                        type: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}', // Laravel CSRF token
-                        },
-                        success: function(response) {
-                            // Remove the comment div upon successful deletion
-                            $(`#comment-${commentId}`).remove(); // Remove the comment block
-                            alert('Comment deleted successfully!');
-                        },
-                        error: function(xhr) {
-                            alert('An error occurred while deleting the comment.');
-                        }
-                    });
-                }
-            });
+        // Event listener for delete comment button
+        $(document).on('click', '.delete-comment', function() {
+            const commentId = $(this).data('id');
+
+            if (confirm('Are you sure you want to delete this comment?')) {
+                $.ajax({
+                    url: `/comments/${commentId}`, // Adjust this URL if needed based on your routing
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}', // Laravel CSRF token
+                    },
+                    success: function(response) {
+                        // Remove the comment div upon successful deletion
+                        $(`#comment-${commentId}`).remove(); // Remove the comment block
+                        alert('Comment deleted successfully!');
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred while deleting the comment.');
+                    }
+                });
+            }
         });
     </script>
 @endsection
