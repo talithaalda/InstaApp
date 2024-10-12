@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -32,7 +33,9 @@ class PostController extends Controller
         if (Auth::user()->id !== $post->user_id) {
             return redirect()->back()->with('error', 'You are not authorized to delete this post.');
         }
-
+        if ($post->image_path) {
+            Storage::disk('public')->delete($post->image_path);
+        }
         $post->delete();
 
         return redirect('/')->with('danger', 'Post deleted successfully.');
