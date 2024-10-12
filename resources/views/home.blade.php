@@ -250,7 +250,10 @@
                     },
                     success: function(response) {
                         if (response.success) {
+
                             var deleteButton = '';
+
+
                             if (response.comment.is_owner) {
                                 deleteButton = `
 <div class="dropdown dropdown-bottom">
@@ -268,6 +271,7 @@
 `;
                             }
 
+
                             var newCommentHtml = `
 <div class="ps-4 mb-2 flex flex-row justify-between items-center" id="comment-${response.comment.id}">
     <div class="flex flex-row gap-2">
@@ -280,6 +284,7 @@
 
 
                             $('#comment_modal_' + postId + ' .flex-col').append(newCommentHtml);
+
 
                             var commentCountElement = $('#comment_count_' + postId);
                             var currentCount = parseInt(commentCountElement.text());
@@ -313,7 +318,6 @@
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
-                        Rem
 
                         $(`#comment-${commentId}`).remove();
                         alert('Comment deleted successfully!');
